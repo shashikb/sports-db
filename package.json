@@ -1,0 +1,26 @@
+{
+  "name": "pro-athlete-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dbcon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shashikb/sports-db.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shashikb/sports-db/issues"
+  },
+  "homepage": "https://github.com/shashikb/sports-db#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "mysql": "^2.13.0"
+  }
+}
