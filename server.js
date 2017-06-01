@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 
 app.get('/', function(req, res){
-  res.render('partials/home', {searchType:'Last Name'});
+  res.render('partials/home', {searchType:'Last Name'}, {lastNameBool: false});
 });
 
 app.post('/', function(req, res) {
@@ -25,14 +25,17 @@ app.post('/', function(req, res) {
   var searchCity = req.body.hasOwnProperty('cityBtn');
   if(req.body.hasOwnProperty('lastNameBtn')) {
     //Search Database for given lastname in searchQuery
-    res.render('partials/home', {searchType:'Last Name'});
+    mysql.pool.query("SELECT * FROM athletes", function(err, rows, fields) {
+      console.log(rows);
+      res.render('partials/home', {searchType:'Last Name', dbDataObj: rows, lastNameBool: true});
+    });
   }
   else if(req.body.hasOwnProperty('sportBtn')) {
-    //Search Database for given lastname in searchQuery
+    //Search Database for given sportsBtn in searchQuery
     res.render('partials/home', {searchType:'Sport'});
   }
   else if(req.body.hasOwnProperty('teamBtn')) {
-    //Search Database for given lastname in searchQuery
+    //Search Database for given teamBtn in searchQuery
     res.render('partials/home', {searchType:'Team'});
   }
 
