@@ -22,7 +22,7 @@ var refineSearchBool = false;
 app.get('/', function(req, res){
   res.render('partials/home', {
     searchType: searchType,
-    dbDataObj: dbObj,
+    dbObj: dbObj,
     lastNameBool: lastNameBool,
     refineSearchBool: refineSearchBool
   });
