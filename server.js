@@ -12,12 +12,23 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+var dbObj = {};
+var lastNameBool = false;
+var sportsBtnBool = false;
+var teamBtnBool = false;
+var searchType = 'Last Name';
+var refineSearchBool = false;
 
 app.get('/', function(req, res){
-  res.render('partials/home', {searchType:'Last Name'}, {lastNameBool: false});
+  res.render('partials/home', {
+    searchType: searchType,
+    dbDataObj: dbObj,
+    lastNameBool: lastNameBool,
+    refineSearchBool: refineSearchBool
+  });
 });
 
-app.post('/', function(req, res) {
+app.post('/get-query', function(req, res) {
   var searchQuery = req.body.searchQuery;
   // var searchCat = 'name'; //Current Search category
   var searchName = req.body.hasOwnProperty('lastNameBtn');
@@ -26,19 +37,30 @@ app.post('/', function(req, res) {
   if(req.body.hasOwnProperty('lastNameBtn')) {
     //Search Database for given lastname in searchQuery
     mysql.pool.query("SELECT * FROM athletes", function(err, rows, fields) {
-      console.log(rows);
-      res.render('partials/home', {searchType:'Last Name', dbDataObj: rows, lastNameBool: true});
+      // res.render('partials/home', {searchType:'Not', dbDataObj: rows, lastNameBool: true});
+      searchType = 'Last Name';
+      dbObj = rows;
+      lastNameBool = true;
+      sportsBtnBool = false;
+      teamBtnBool = false;
+      console.log(dbObj[0].id);
+
+      res.redirect('/');
     });
+
   }
   else if(req.body.hasOwnProperty('sportBtn')) {
-    //Search Database for given sportsBtn in searchQuery
-    res.render('partials/home', {searchType:'Sport'});
+    // res.render('partials/home', {searchType:'Sport'});
+
   }
   else if(req.body.hasOwnProperty('teamBtn')) {
-    //Search Database for given teamBtn in searchQuery
-    res.render('partials/home', {searchType:'Team'});
+    searchType = 'Team';
+    // dbObj = JSON.parse(rows);
+    lastNameBool = false;
+    sportsBtnBool = true;
+    teamBtnBool = false;
+    res.redirect('/');
   }
-
 });
 
 /*
@@ -118,9 +140,22 @@ app.get('/add-team', function(req, res) {
   res.render('partials/add-team');
 });
 
-app.post('/search-lastname', function(req, res) {
-  console.log(req.body)
+/*
+*   toggle-refine
+*   This route handles the toggle button to further refine a search. Starts off
+*   as false but then alternates to true/false every time the button is pressed.
+*/
+app.post('/toggle-refine', function(req, res) {
+  refineSearchBool = !refineSearchBool;
+  console.log(refineSearchBool)
+  res.redirect('/');
 })
+
+app.post('/toggle-refine-search-bool', function(req, res) {
+  console.log('changing to true');
+  refineSearchBool = !refineSearchBool;
+  res.redirect('/');
+});
 
 app.listen(app.get('port'), function(){
     console.log("Server started on port " + app.get('port'));

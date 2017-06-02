@@ -1,6 +1,6 @@
 {{>header}}
 <div class='container-fluid'>
-  <form action='/' method='post'>
+  <form action='/get-query' method='post'>
     <div class='row'>
       <div class='col-md-12'>
         <h4>Searching By {{searchType}}...</h4>
@@ -24,11 +24,27 @@
         <button type="submit" class="btn btn-default" name='teamBtn'>Team</button>
       </div>
     </div>
+  </form>
 
     <div class='row'>
+      {{#if lastNameBool}}
       <div class="container-fluid">
-        <h2>{{searchType}} Results</h2>
-        <p>The .table-hover class enables a hover state on table rows:</p>
+
+        <h4>Results for search by: {{searchType}}....</h4>
+
+        <div class='col-md-6'>
+
+        <form action='/toggle-refine' method='post'>
+          <button type="submit" class="btn btn-default" name='refineSearchBtn'>Refine Search!</button>
+        </form>
+          {{#if refineSearchBool}}
+          <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">@</span>
+            <input type="text" class="form-control" placeholder="Search" name='searchQuery' id='searchContent'>
+          </div>
+        </div>
+        {{/if}}
+
         <table class="table table-hover">
           <thead>
             <tr>
@@ -57,4 +73,5 @@
         </table>
       </div>
     </div>
+    {{/if}}
 </div>
