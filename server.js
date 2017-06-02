@@ -36,14 +36,15 @@ app.post('/get-query', function(req, res) {
   var searchCity = req.body.hasOwnProperty('cityBtn');
   if(req.body.hasOwnProperty('lastNameBtn')) {
     //Search Database for given lastname in searchQuery
-    mysql.pool.query("SELECT * FROM athletes", function(err, rows, fields) {
+    console.log('Searching last name: ', searchQuery)
+    mysql.pool.query("SELECT * FROM `athletes` WHERE `lastname` = '" + searchQuery + "'" , function(err, rows, fields) {
       // res.render('partials/home', {searchType:'Not', dbDataObj: rows, lastNameBool: true});
+      console.log('returned: ' + rows);
       searchType = 'Last Name';
       dbObj = rows;
       lastNameBool = true;
       sportsBtnBool = false;
       teamBtnBool = false;
-      console.log(dbObj[0].id);
 
       res.redirect('/');
     });
