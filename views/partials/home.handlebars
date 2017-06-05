@@ -1,6 +1,6 @@
 {{>header}}
 <div class='container-fluid'>
-  <form action='/get-query' method='post'>
+
     <div class='row'>
       <div class='col-md-12'>
         <h4>Searching By {{searchType}}...</h4>
@@ -9,6 +9,7 @@
 
     <div class='row'>
       <div class='col-md-6'>
+        <form action='/get-query' method='post'>
         <div class="input-group">
           <span class="input-group-addon" id="basic-addon1">@</span>
           <input type="text" class="form-control" placeholder="Search" name='searchQuery' id='searchContent'>
@@ -21,13 +22,13 @@
         <button type="submit" class="btn btn-default btn-block" name='sportBtn'>Sport</button>
       </div>
       <div class='col-md-1'>
-        <button type="submit" class="btn btn-default btn-block" name='teamBtn'>League</button>
+        <button type="submit" class="btn btn-default btn-block" name='leagueBtn'>League</button>
       </div>
       <div class='col-md-1'>
-        <button type="submit" class="btn btn-default btn-block" name='lastNameBtn'>Team</button>
+        <button type="submit" class="btn btn-default btn-block" name='teamBtn'>Team</button>
       </div>
       <div class='col-md-1'>
-        <button type="submit" class="btn btn-default btn-block" name='sportBtn'>Alma Mater</button>
+        <button type="submit" class="btn btn-default btn-block" name='almaMaterBtn'>Alma Mater</button>
       </div>
     </div>
   </form>
@@ -76,6 +77,52 @@
           </tbody>
         </table>
       </div>
+      {{/if}}
     </div>
-    {{/if}}
+
+    <div class='row'>
+    {{#if teamBtnBool}}
+    <div class="container-fluid">
+      <h4>Results for search by: {{searchType}}....</h4>
+      <div class='col-md-6'>
+        <form action='/toggle-refine' method='post'>
+          <button type="submit" class="btn btn-default" name='refineSearchBtn'>Refine Search!</button>
+        </form>
+        {{#if refineSearchBool}}
+        <div class="input-group">
+          <span class="input-group-addon" id="basic-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Search" name='searchQuery' id='searchContent'>
+        </div>
+        {{/if}}
+      </div>
+
+
+      <table class="table table-hover">
+        <!-- <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Age</th>
+            <th>Weight</th>
+            <th>Height</th>
+            <th>Salary</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each dbObj}}
+            <tr>
+              <td>{{this.firstname}}</td>
+              <td>{{this.lastname}}</td>
+              <td>{{this.age}}</td>
+              <td>{{this.weight}}</td>
+              <td>{{this.height}}</td>
+              <td>{{this.salary}}</td>
+            </tr>
+          {{/each}}
+        </tbody> -->
+      </table>
+    </div>
+
+  </div>
+  {{/if}}
 </div>

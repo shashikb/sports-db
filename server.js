@@ -24,6 +24,7 @@ app.get('/', function(req, res){
     searchType: searchType,
     dbObj: dbObj,
     lastNameBool: lastNameBool,
+    teamBtnBool: teamBtnBool,
     refineSearchBool: refineSearchBool
   });
 });
@@ -34,6 +35,8 @@ app.post('/get-query', function(req, res) {
   var searchName = req.body.hasOwnProperty('lastNameBtn');
   var searchSport = req.body.hasOwnProperty('sportBtn');
   var searchCity = req.body.hasOwnProperty('cityBtn');
+  console.log("hasOwnProperty value = ", req.body);
+  console.log("hasOwnProperty value = ", req.body);
   if(req.body.hasOwnProperty('lastNameBtn')) {
     //Search Database for given lastname in searchQuery
     console.log('Searching last name: ', searchQuery)
@@ -45,7 +48,7 @@ app.post('/get-query', function(req, res) {
       lastNameBool = true;
       sportsBtnBool = false;
       teamBtnBool = false;
-
+      req.body.lastNameBtn = false;
       res.redirect('/');
     });
 
@@ -55,11 +58,12 @@ app.post('/get-query', function(req, res) {
 
   }
   else if(req.body.hasOwnProperty('teamBtn')) {
+    console.log('reaching');
     searchType = 'Team';
     // dbObj = JSON.parse(rows);
     lastNameBool = false;
-    sportsBtnBool = true;
-    teamBtnBool = false;
+    sportsBtnBool = false;
+    teamBtnBool = true;
     res.redirect('/');
   }
 });
@@ -77,12 +81,16 @@ app.get('/create-table', function(req, res) {
       "id INT PRIMARY KEY AUTO_INCREMENT,"+
       "firstname VARCHAR(255) NOT NULL,"+
       "lastname VARCHAR(255) NOT NULL,"+
-      "team VARCHAR(255),"+
+      "team INT,"+
       "age INT,"+
       "weight INT,"+
       "height INT,"+
-      "salary INT)";
+      "salary INT,"+
+      "FOREIGN KEY (team) REFERENCES teams(id))";
       mysql.pool.query(createString, function(err){
+        if(err) {
+          console.log(err);
+        }
         console.log('Athlete Table Created.')
         // res.redirect('/');
       })
@@ -121,9 +129,56 @@ app.post('/add-athlete', function(req, res) {
   var weight = req.body.weight;
   var salary = req.body.salary;
 
+  mysql.pool.query("SELECT * FROM `teams` where `teamname` = '" + team + "'", function(err, rows, fields) {
+    //If error in finding team name in database, then throw error
+    if(err) {
+      console.log("error for some reason");
+      console.log(err);
+    }
+    //If team name we are attempting to add to exists in the teams db, then add the id of that team to field.
+    else {
+      if(rows.length > 0){
+        mysql.pool.query(
+          "INSERT into athletes(firstname, lastname, team, age, height, weight, salary) values (?, ?, ?, ?, ?, ?, ?)",
+          [firstName, lastName, rows[0].id, age, height, weight, salary],
+          function(err, result) {
+            if(err) {
+              next(err);
+              return;
+            }
+            console.log('Inserted into id: ', result.id)
+          }
+        )
+        res.redirect('/');
+      }
+      else {
+        //Team does not exist, redirect to add team?
+        console.log('reaching');
+        res.redirect('/dne/add-team');
+      }
+    }
+  });
+});
+
+app.get('/add-team', function(req, res) {
+  res.render('partials/add-team', {teamDNEbool: false});
+});
+app.get('/dne/add-team', function(req, res) {
+  res.render('partials/add-team', {teamDNEbool: true});
+});
+
+app.post('/add-team', function(req, res) {
+  var teamObj = {};
+  var teamName = req.body.teamName;
+  var cityName = req.body.cityName;
+  var sportName = req.body.sportName;
+  var leagueName = req.body.leagueName;
+  var payroll = req.body.payroll;
+  //Eventually add athletes here.
+
   mysql.pool.query(
-    "INSERT into athletes(firstname, lastname, team, age, height, weight, salary) values (?, ?, ?, ?, ?, ?, ?)",
-    [firstName, lastName, team, age, height, weight, salary],
+    "INSERT into teams(teamname, city, numAthletes, league, sport, payroll) values (?, ?, ?, ?, ?, ?)",
+    [teamName, cityName, 0, leagueName, sportName, payroll],
     function(err, result) {
       if(err) {
         next(err);
@@ -132,14 +187,8 @@ app.post('/add-athlete', function(req, res) {
       console.log('Inserted into id: ', result.id)
     }
   )
-
   res.redirect('/');
-
-});
-
-app.get('/add-team', function(req, res) {
-  res.render('partials/add-team');
-});
+})
 
 /*
 *   toggle-refine

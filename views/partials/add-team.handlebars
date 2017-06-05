@@ -1,5 +1,10 @@
 {{>header}}
 
+{{#if teamDNEbool}}
+<div class='container-fluid'>
+  <p style='{color:red}'>ERROR:The team you tried adding the athlete to does not exist. Please add the team information then try re-adding athlete.</p>
+</div>
+{{/if}}
 <div class='container-fluid'>
   <form action='/add-team' method='post'>
   <div class="form-group">
