@@ -98,6 +98,30 @@
 
 
       <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>City</th>
+            <th>League</th>
+            <th>Sport</th>
+            <th>Players</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each dbObj}}
+          <tr>
+            <td>{{this.teamname}}</td>
+            <td>{{this.city}}</td>
+            <td>{{this.league}}</td>
+            <td>{{this.sport}}</td>
+          {{/each}}
+
+          {{#each athletePerTeam}}
+              <td>{{this.firstname}} {{this.lastname}}</td>
+          {{/each}}
+          </tr>
+
+        </tbody>
         <!-- <thead>
           <tr>
             <th>First Name</th>

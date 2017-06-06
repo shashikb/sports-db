@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 var dbObj = {};
+var athletePerTeam = {};
 var lastNameBool = false;
 var sportsBtnBool = false;
 var teamBtnBool = false;
@@ -23,6 +24,7 @@ app.get('/', function(req, res){
   res.render('partials/home', {
     searchType: searchType,
     dbObj: dbObj,
+    athletePerTeam: athletePerTeam,
     lastNameBool: lastNameBool,
     teamBtnBool: teamBtnBool,
     refineSearchBool: refineSearchBool
@@ -58,13 +60,22 @@ app.post('/get-query', function(req, res) {
 
   }
   else if(req.body.hasOwnProperty('teamBtn')) {
-    console.log('reaching');
-    searchType = 'Team';
-    // dbObj = JSON.parse(rows);
-    lastNameBool = false;
-    sportsBtnBool = false;
-    teamBtnBool = true;
-    res.redirect('/');
+    mysql.pool.query("SELECT * FROM `teams` WHERE `teamname` = '" + searchQuery + "'" , function(err, rows, fields) {
+      mysql.pool.query("SELECT * FROM `athletes` WHERE `team` = '" + rows[0].id + "'", function(err2, rows2, fields2) {
+        if(err) {
+          console.log(err);
+        }
+        console.log(rows);
+        console.log(rows2);
+        searchType = 'Team';
+        dbObj = rows;
+        athletePerTeam = rows2;
+        lastNameBool = false;
+        sportsBtnBool = false;
+        teamBtnBool = true;
+        res.redirect('/');
+      });
+    });
   }
 });
 
@@ -100,7 +111,6 @@ app.get('/create-table', function(req, res) {
         "id INT PRIMARY KEY AUTO_INCREMENT,"+
         "teamname VARCHAR(255) NOT NULL,"+
         "city VARCHAR(255) NOT NULL,"+
-        "numAthletes INT,"+
         "league VARCHAR(255),"+
         "sport VARCHAR(255),"+
         "payroll INT)";
@@ -177,8 +187,8 @@ app.post('/add-team', function(req, res) {
   //Eventually add athletes here.
 
   mysql.pool.query(
-    "INSERT into teams(teamname, city, numAthletes, league, sport, payroll) values (?, ?, ?, ?, ?, ?)",
-    [teamName, cityName, 0, leagueName, sportName, payroll],
+    "INSERT into teams(teamname, city, league, sport, payroll) values (?, ?, ?, ?, ?)",
+    [teamName, cityName, leagueName, sportName, payroll],
     function(err, result) {
       if(err) {
         next(err);
