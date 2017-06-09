@@ -1,0 +1,25 @@
+{{>header}}
+
+{{#if cityDNEbool}}
+<div class='container-fluid'>
+  <p>ERROR:The team you tried adding the alma mater to a city that does not exist. Please add the city information then try re-adding alma mater.</p>
+</div>
+{{/if}}
+<div class='container-fluid'>
+  <form action='/add-city' method='post'>
+  <div class="form-group">
+    <label>City</label>
+    <input type="text" class="form-control" name="cityName">
+  </div>
+  <div class="form-group">
+    <label>State</label>
+    <input type="text" class="form-control" name="stateName">
+  </div>
+  <div class="form-group">
+    <label>Population</label>
+    <input type="text" class="form-control" name="cityPop">
+  </div>
+
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</div>

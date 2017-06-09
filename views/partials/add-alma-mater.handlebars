@@ -1,0 +1,32 @@
+{{>header}}
+
+<div class='container-fluid'>
+  <form action='/add-alma-mater' method='post'>
+  <div class="form-group">
+    <label>School Name:</label>
+    <input type="text" class="form-control" name="schoolName">
+  </div>
+  <div class="form-group">
+    <label>City:</label>
+    <input type="text" class="form-control" name="city">
+  </div>
+  <div class="form-group">
+    <label>Mascot</label>
+    <input type="text" class="form-control" name="mascotName">
+  </div>
+  <div class="form-group">
+    <label>Student Body Population</label>
+    <input type="text" class="form-control" name="studentPop">
+  </div>
+  <div class="form-group">
+    <label>Sports in Athletics Department</label>
+    <br>
+    <label class="checkbox-inline"><input type="checkbox" value="football" name="fball">Football</label>
+    <label class="checkbox-inline"><input type="checkbox" value="basketball" name="bball">Basketball</label>
+    <label class="checkbox-inline"><input type="checkbox" value="baseball" name="baseball">Baseball</label>
+    <label class="checkbox-inline"><input type="checkbox" value="soccer" name="soccer">Soccer</label>
+    <label class="checkbox-inline"><input type="checkbox" value="hockey" name="hockey">Hockey</label>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</div>

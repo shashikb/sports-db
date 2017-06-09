@@ -1,0 +1,63 @@
+{{>header}}
+
+<div class='container-fluid'>
+  <form action='/update-tables' method='post'>
+    <div class="form-group">
+      <label for="sel1">Select list:</label>
+      <select class="form-control" id="sel1" name='selection'>
+        <option value='athlete'>Athlete</option>
+        <option value='team'>Team</option>
+        <option value='alma'>Alma Mater</option>
+        <option value='city'>City</option>
+      </select>
+      <div class='row'>
+        <div class='col-md-1'>
+          <button type="submit" class="btn btn-default btn-block" name='updateExisting'>Update Entry</button>
+        </div>
+        <div class='col-md-1'>
+          <button type="submit" class="btn btn-default btn-block" name='deleteFrom'>Delete Entry</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
+  {{#if updateAthleteBool}}
+  <div class='row'>
+  <div class="container-fluid">
+
+    <div class='col-md-6'>
+      <h4>Update Athlete Table Information</h4>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Age</th>
+          <th>Weight</th>
+          <th>Height</th>
+          <th>Salary</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <form action='/update-athlete' method='post'>
+        {{#each dbObj}}
+          <tr>
+            <td class='td-update'>{{this.firstname}}<input type="hidden" name="firstname" value = {{this.firstname}}/></td>
+            <td class='td-update'>{{this.lastname}}<input type="hidden" name="lastname" /></td>
+            <td class='td-update'>{{this.age}}<input type="hidden" name="age" /></td>
+            <td class='td-update'>{{this.weight}}<input type="hidden" name="weight" /></td>
+            <td class='td-update'>{{this.height}}<input type="hidden" name="height" /></td>
+            <td class='td-update'>{{this.salary}}<input type="hidden" name="salary"  /></td>
+            <td><button type="submit" class="btn btn-default" name='deleteFrom'>Update Entry</button><td>
+          </tr>
+        {{/each}}
+      </form>
+      </tbody>
+    </table>
+  </div>
+  {{/if}}
+</div>
