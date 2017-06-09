@@ -26,7 +26,6 @@ var editFieldBool = false;
 
 
 app.get('/', function(req, res){
-  console.log("editFieldBool = ", editFieldBool);
   res.render('partials/home', {
     searchType: searchType,
     dbObj: dbObj,
@@ -44,50 +43,74 @@ app.get('/', function(req, res){
 
 app.post('/get-query', function(req, res) {
   var searchQuery = req.body.searchQuery;
-  // var searchCat = 'name'; //Current Search category
   var searchName = req.body.hasOwnProperty('lastNameBtn');
   var searchSport = req.body.hasOwnProperty('sportBtn');
   var searchCity = req.body.hasOwnProperty('cityBtn');
-  console.log("hasOwnProperty value = ", req.body);
-  console.log("hasOwnProperty value = ", req.body);
 
   if(req.body.hasOwnProperty('lastNameBtn')) {
     //Search Database for given lastname in searchQuery
     console.log('Searching last name: ', searchQuery)
-    mysql.pool.query("SELECT * FROM `athletes` WHERE `lastname` = '" + searchQuery + "'" , function(err, rows, fields) {
-      // res.render('partials/home', {searchType:'Not', dbDataObj: rows, lastNameBool: true});
-      console.log('searchQuery = ', searchQuery);
-      console.log(rows);
-      searchType = 'Last Name';
-      dbObj = rows;
-      lastNameBool = true;
-      sportsBtnBool = false;
-      teamBtnBool = false;
-      req.body.lastNameBtn = false;
-      res.redirect('/');
-    });
+    if(searchQuery != ""){
+      mysql.pool.query("SELECT * FROM `athletes` WHERE `lastname` = '" + searchQuery + "'" , function(err, rows, fields) {
+        // res.render('partials/home', {searchType:'Not', dbDataObj: rows, lastNameBool: true});
+        searchType = 'Last Name';
+        dbObj = rows;
+        lastNameBool = true;
+        sportsBtnBool = false;
+        teamBtnBool = false;
+        req.body.lastNameBtn = false;
+        res.redirect('/');
+      });
+    }
+    else if(searchQuery === "") {
+      mysql.pool.query("SELECT * FROM `athletes`", function(err, rows, fields) {
+        // res.render('partials/home', {searchType:'Not', dbDataObj: rows, lastNameBool: true});
+        searchType = 'Last Name';
+        dbObj = rows;
+        lastNameBool = true;
+        sportsBtnBool = false;
+        teamBtnBool = false;
+        req.body.lastNameBtn = false;
+        res.redirect('/');
+      });
+    }
 
   }
   else if(req.body.hasOwnProperty('cityBtn')) {
     var cityObj = {};
-    mysql.pool.query("SELECT * FROM cities WHERE `cityname` = '" + searchQuery + "'", function(err, rows, fields) {
-      console.log(rows);//city object from database saved here.
-      //parse obj here.
-      mysql.pool.query("SELECT * FROM teams WHERE `city` = '" + searchQuery + "'", function(err2, rows2, fields2) {
-        console.log(rows2);
-        searchType = 'City';
-        dbObj = rows;
-        dbObj2 = rows2;
-        lastNameBool = false;
-        sportsBtnBool = false;
-        teamBtnBool = false;
-        almaMaterBtn = false;
-        cityBtnBool = true;
-        req.body.lastNameBtn = false;
-        res.redirect('/');
+    if(searchQuery != "") {
+      mysql.pool.query("SELECT * FROM cities WHERE `cityname` = '" + searchQuery + "'", function(err, rows, fields) {
+        mysql.pool.query("SELECT * FROM teams WHERE `city` = '" + searchQuery + "'", function(err2, rows2, fields2) {
+          searchType = 'City';
+          dbObj = rows;
+          dbObj2 = rows2;
+          lastNameBool = false;
+          sportsBtnBool = false;
+          teamBtnBool = false;
+          almaMaterBtn = false;
+          cityBtnBool = true;
+          req.body.lastNameBtn = false;
+          res.redirect('/');
+        });
       });
+    }
+    else if(searchQuery === "") {
+      mysql.pool.query("SELECT * FROM cities", function(err, rows, fields) {
+        mysql.pool.query("SELECT * FROM teams", function(err2, rows2, fields2) {
+          searchType = 'City';
+          dbObj = rows;
+          //dbObj2 = rows2;
+          lastNameBool = false;
+          sportsBtnBool = false;
+          teamBtnBool = false;
+          almaMaterBtn = false;
+          cityBtnBool = true;
+          req.body.lastNameBtn = false;
+          res.redirect('/');
+        });
     });
   }
+}
   else if(req.body.hasOwnProperty('almaMaterBtn')) {
     var almaMaterObj = {};
     mysql.pool.query("SELECT * FROM almaMater WHERE `schoolName` = '" + searchQuery + "'", function(err, rows, fields) {
@@ -117,20 +140,35 @@ app.post('/get-query', function(req, res) {
     // res.render('partials/home', {searchType:'almaMaterBtn'});
   }
   else if(req.body.hasOwnProperty('teamBtn')) {
-    mysql.pool.query("SELECT * FROM `teams` WHERE `teamname` = '" + searchQuery + "'" , function(err, rows, fields) {
-      mysql.pool.query("SELECT * FROM `athletes` WHERE `team` = '" + rows[0].id + "'", function(err2, rows2, fields2) {
-        if(err) {
-          console.log(err);
-        }
-        searchType = 'Team';
-        dbObj = rows;
-        athletePerTeam = rows2;
-        lastNameBool = false;
-        sportsBtnBool = false;
-        teamBtnBool = true;
-        res.redirect('/');
+    if(searchQuery != "") {
+      mysql.pool.query("SELECT * FROM `teams` WHERE `teamname` = '" + searchQuery + "'" , function(err, rows, fields) {
+        mysql.pool.query("SELECT * FROM `athletes` WHERE `team` = '" + rows[0].id + "'", function(err2, rows2, fields2) {
+          if(err) {
+            console.log(err);
+          }
+          searchType = 'Team';
+          dbObj = rows;
+          athletePerTeam = rows2;
+          lastNameBool = false;
+          sportsBtnBool = false;
+          teamBtnBool = true;
+          res.redirect('/');
+        });
       });
-    });
+    }
+    else if(searchQuery === "") {
+      mysql.pool.query("SELECT * FROM `teams`", function(err, rows, fields) {
+        mysql.pool.query("SELECT * FROM `athletes`", function(err2, rows2, fields2) {
+          searchType = 'Team';
+          dbObj = rows;
+          // athletePerTeam = rows2;
+          lastNameBool = false;
+          sportsBtnBool = false;
+          teamBtnBool = true;
+          res.redirect('/');
+        });
+      });
+    }
   }
 });
 

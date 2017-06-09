@@ -1,6 +1,11 @@
 {{>header}}
 <div class='container-fluid'>
-
+    <div class='row'>
+      <div class='col-md-12'>
+        <p>Welcome to the Sports Database.</p>
+        <p>Search for a topic by typing the query in the searchbox and then selecting a topic to sort by.</p>
+      </div>
+    </div>
     <div class='row'>
       <div class='col-md-12'>
         <h4>Searching By {{searchType}}...</h4>
@@ -53,6 +58,7 @@
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>Team</th>
               <th>Age</th>
               <th>Weight</th>
               <th>Height</th>
@@ -116,6 +122,7 @@
       <div class='container-fluid'>
         <div class='row'>
           <div class='col-md-9'>
+            <h3>Team Information</h3>
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -123,7 +130,6 @@
                   <th>City</th>
                   <th>League</th>
                   <th>Sport</th>
-                  <th>Players</th>
                 </tr>
               </thead>
               <tbody>
@@ -140,6 +146,7 @@
             </table>
           </div>
           <div class='col-md-3'>
+            <h3>Players</h3>
             <table class="table table-hover">
               <thead>
                 <th>First Name</th>
@@ -226,13 +233,14 @@
             </tr>
           </thead>
           <tbody>
+
+          {{#each dbObj}}
             <tr>
-            {{#each dbObj}}
-                <td>{{this.cityname}}</td>
-                <td>{{this.state}}</td>
-                <td>{{this.population}}</td>
-            {{/each}}
+              <td>{{this.cityname}}</td>
+              <td>{{this.state}}</td>
+              <td>{{this.population}}</td>
             </tr>
+          {{/each}}
           </tbody>
         </table>
         <table class="table table-hover">
